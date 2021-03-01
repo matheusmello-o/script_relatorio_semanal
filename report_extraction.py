@@ -25,9 +25,21 @@ df_lf['tipo_de_consumo'] = 'Logado Free'
 # Creating the main dataframe
 df = pd.concat([df_a, df_lf])
 df['semana'] = week_number
+# Filtering the data
+week_filter = (df['Data'] >= date_min) & (df['Data'] <= date_max)
+df = df.loc[week_filter]
 
 df['horas_consumidas'] = df['Video Playtime'] / 3600
 
+# Creating the column to classify the type of consumption
+df['Tipo de Consumo'] = \
+['Live' if tipo_video.lower() == 'live' else\
+'VOD Aberto' if tipo_consumo == 'Aberto' else\
+'VOD Fechado' if tipo_consumo == 'Fechado' else\
+'VOD Logado Free' if tipo_consumo == 'Logado Free' else\
+'null'\
+for tipo_video, tipo_consumo in zip(df['Video - Tipo de video'], df['tipo_de_consumo'])]
 
-df_group = df.groupby(['Video - ID do programa', 'tipo_de_consumo',]).\
-			agg({'horas_consumidas': 'sum', 'Video Start': 'sum'})
+
+df_final = pd.DataFrame(df.groupby(['Video - ID do programa', 'Tipo de Consumo', 'Semana'])['horas_consumidas', 'Video Start'].sum()).reset_index()
+
