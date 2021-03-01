@@ -32,7 +32,5 @@ df['semana'] = week_number
 df['horas_consumidas'] = df['Video Playtime'] / 3600
 
 
-df_group = df.groupby(['Video - ID do programa', ])
-
-
-
+df_group = df.groupby(['Video - ID do programa', 'tipo_de_consumo',]).\
+			agg({'horas_consumidas': 'sum', 'Video Start': 'sum'})
