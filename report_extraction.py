@@ -20,7 +20,7 @@ df_lf = pd.concat(pd.read_csv(file) for file in files_logados_free)
 
 df_a['tipo_de_consumo'] = ['Aberto' if tipo_conteudo.lower() == 'aberto' else 'Fechado' for tipo_conteudo in df_a['Video - Fechado/Aberto']]
 
-df_lf['tipo_de_consumo'] = 'Logado Free'
+df_lf['tipo_de_consumo'] = ['Aberto' if tipo_conteudo.lower() == 'aberto' else 'Logado Free' for tipo_conteudo in df_lf['Video - Fechado/Aberto']
 
 # Creating the main dataframe
 df = pd.concat([df_a, df_lf])
