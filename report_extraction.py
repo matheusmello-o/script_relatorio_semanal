@@ -6,8 +6,8 @@ print('\n\nAqui será feito a extracao do relatório semanal.')
 print('Por favor, digite a data conforme a o modelo a seguir de ano, mês e dia:--> 20210108')
 print('E a semana conforme o exemplo a seguir:--> Semana 2\n')
 
-date_min = input('Digite a data que inicia a semana: ')
-date_max = input('Digite a data que encerra a semana: ')
+date_min = int(input('Digite a data que inicia a semana: '))
+date_max = int(input('Digite a data que encerra a semana: '))
 week_number = input('Qual seria a semana: ')
 
 # Catching all files in the path. After that, all sort all the files in a list
