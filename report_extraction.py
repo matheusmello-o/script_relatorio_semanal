@@ -11,9 +11,18 @@ date_max = int(input('Digite a data que encerra a semana: '))
 week_number = input('Qual seria a semana: ')
 
 # Catching all files in the path. After that, all sort all the files in a list
-files_assinantes = sorted(glob(r'../base_assinantes/*.csv'))
-files_logados_free = sorted(glob(r'../base_lf/*.csv'))
+files = sorted(glob(r'../concat_report/base/*.csv'))
 
+# Separating them in lf and assinante and anonimo
+files_logados_free = []
+files_assinantes = []
+
+for file in files:
+    if 'Free' in file:
+        files_logados_free.append(file)
+    else:
+        files_assinantes.append(file)
+        
 # Reading all the files and concating them in a dataframe
 df_a = pd.concat(pd.read_csv(file, engine = 'python') for file in files_assinantes)
 df_lf = pd.concat(pd.read_csv(file, engine = 'python') for file in files_logados_free)
@@ -40,8 +49,15 @@ df['Tipo de Consumo'] = \
 'null'\
 for tipo_video, tipo_consumo in zip(df['Video - Tipo de video'], df['tipo_de_consumo'])]
 
-
 df_final = pd.DataFrame(df.groupby(['Video - ID do programa', 'Tipo de Consumo', 'semana'])['horas_consumidas', 'Video Start'].sum()).reset_index()
+
+# Adding a start and end date to the report.
+def date_format(date):
+    date = str(date)
+    return date[-2:] + '/' + date[4:6] + '/' + date[:4]
+
+df_final['comeco_fim_semana'] = date_format(date_min) + ' - ' + date_format(date_max)
+
 
 df_name = '../base_semanal/' + week_number + '.csv'
  
