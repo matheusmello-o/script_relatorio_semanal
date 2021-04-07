@@ -11,16 +11,16 @@ date_max = int(input('Digite a data que encerra a semana: '))
 week_number = input('Qual seria a semana: ')
 
 # Catching all files in the path. After that, all sort all the files in a list
-files_assinantes = sorted(glob(r'base_assinantes/*.csv'))
-files_logados_free = sorted(glob(r'base_lf/*.csv'))
+files_assinantes = sorted(glob(r'../base_assinantes/*.csv'))
+files_logados_free = sorted(glob(r'../base_lf/*.csv'))
 
 # Reading all the files and concating them in a dataframe
-df_a = pd.concat(pd.read_csv(file) for file in files_assinantes)
-df_lf = pd.concat(pd.read_csv(file) for file in files_logados_free)
+df_a = pd.concat(pd.read_csv(file, engine = 'python') for file in files_assinantes)
+df_lf = pd.concat(pd.read_csv(file, engine = 'python') for file in files_logados_free)
 
 df_a['tipo_de_consumo'] = ['Aberto' if tipo_conteudo.lower() == 'aberto' else 'Fechado' for tipo_conteudo in df_a['Video - Fechado/Aberto']]
 
-df_lf['tipo_de_consumo'] = ['Aberto' if tipo_conteudo.lower() == 'aberto' else 'Logado Free' for tipo_conteudo in df_lf['Video - Fechado/Aberto']
+df_lf['tipo_de_consumo'] = ['Aberto' if tipo_conteudo.lower() == 'aberto' else 'Logado Free' for tipo_conteudo in df_lf['Video - Fechado/Aberto']]
 
 # Creating the main dataframe
 df = pd.concat([df_a, df_lf])
@@ -41,5 +41,8 @@ df['Tipo de Consumo'] = \
 for tipo_video, tipo_consumo in zip(df['Video - Tipo de video'], df['tipo_de_consumo'])]
 
 
-df_final = pd.DataFrame(df.groupby(['Video - ID do programa', 'Tipo de Consumo', 'Semana'])['horas_consumidas', 'Video Start'].sum()).reset_index()
+df_final = pd.DataFrame(df.groupby(['Video - ID do programa', 'Tipo de Consumo', 'semana'])['horas_consumidas', 'Video Start'].sum()).reset_index()
 
+df_name = '../base_semanal/' + week_number + '.csv'
+ 
+df_final.to_csv(df_name)
